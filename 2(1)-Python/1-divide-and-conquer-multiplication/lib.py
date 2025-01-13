@@ -80,7 +80,7 @@ class Matrix:
         identity matrix에 clone matrix를 n번 곱해준다.
 
         Args:
-            n : 거듭제곱 수를 나타낸다.
+            - n : 거듭제곱 수를 나타낸다.
 
         Returns:
             - Matrix : 거듭제곱을 수행한 matrix를 반환한다.

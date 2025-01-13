@@ -46,6 +46,17 @@ class Matrix:
         return self.matrix[key[0]][key[1]]
 
     def __setitem__(self, key: tuple[int, int], value: int) -> None:
+        """
+        matrix의 지정된 위치에 값을 설정한다.
+        값은 1000보다 작아야하기에 modular 연산을 수행한다.
+
+        Args:
+            - key : 값을 설정하기 위한 인덱스.
+            - value : matrix에 설정할 값.
+
+        Returns:
+            - None : 값이 설정되며 반환값이 없다.
+        """
         self.matrix[key[0]][key[1]] = value % self.MOD
         pass
 
@@ -64,6 +75,16 @@ class Matrix:
         return result
 
     def __pow__(self, n: int) -> Matrix:
+        """
+        matrix에 대해 거듭제곱을 구한다.
+        identity matrix에 clone matrix를 n번 곱해준다.
+
+        Args:
+            - n : 거듭제곱 수를 나타낸다.
+
+        Returns:
+            - Matrix : 거듭제곱을 수행한 matrix를 반환한다.
+        """
         x, y = self.shape
         result = Matrix.eye(self.shape[0])
         temp = self.clone()
@@ -77,6 +98,15 @@ class Matrix:
         pass
 
     def __repr__(self) -> str:
+        """
+        matrix의 문자열 표현을 반환한다.
+        각 column은 공백으로 구분되며 row 사이에는 줄바꿈이 일어난다.
+
+        Args:
+
+        Returns:
+            - str : 행렬을 나타내는 문자열.
+        """
         x, y = self.shape
         result = []
         for i in range(x):
