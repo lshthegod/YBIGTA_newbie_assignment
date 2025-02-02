@@ -10,8 +10,11 @@ from config import *
 NUM_CLASSES = 10  
 
 transform = transforms.Compose([
-    transforms.ToTensor(),
-    transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5)),
+    transforms.RandomHorizontalFlip(),      # 수평 반전
+    transforms.RandomRotation(10),          # 10도까지 회전
+    transforms.RandomCrop(32, padding=4),  # 랜덤 크롭 및 패딩
+    transforms.ToTensor(),                  # 텐서 변환
+    transforms.Normalize(mean=[0.5, 0.5, 0.5], std=[0.5, 0.5, 0.5])  # 정규화
 ])
 
 # CIFAR-10 데이터셋 로드
