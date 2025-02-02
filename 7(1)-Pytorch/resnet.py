@@ -29,9 +29,15 @@ class BasicBlock(nn.Module):
             )
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
-        
-        ## TODO
-        out = None
+        out = self.conv1(x)
+        out = self.bn1(out)
+        out = F.relu(out)
+
+        out = self.conv2(out)
+        out = self.bn2(out)
+
+        out += self.shortcut(x)
+        out = F.relu(out)
         
         return out
         
@@ -43,8 +49,13 @@ class ResNet(nn.Module):
         self.in_channels: int = 64
 
         ## TODO
-        # Resnet layer를 구현하세요!
-        # Hint: 두번째 layer부터는 _make_layer 메서드를 활용하세요! 
+        self.conv1 = nn.Conv2d(3, 64, kernel_size=7, stride=2, padding=3, bias=False)
+        self.bn1 = nn.BatchNorm2d(64)
+        
+        self.layer1 = self._make_layer(block, 64, num_blocks[0], stride=1)
+        self.layer2 = self._make_layer(block, 128, num_blocks[1], stride=2)
+        self.layer3 = self._make_layer(block, 256, num_blocks[2], stride=2)
+        self.layer4 = self._make_layer(block, 512, num_blocks[3], stride=2)
         
         self.avg_pool: nn.AdaptiveAvgPool2d = nn.AdaptiveAvgPool2d((1, 1))
         self.fc: nn.Linear = nn.Linear(512 * block.expansion, num_classes)
@@ -55,10 +66,24 @@ class ResNet(nn.Module):
         layers: List[nn.Module] = []
         
         ## TODO
+        for stride in strides:
+            layers.append(block(self.in_channels, out_channels, stride))
+            self.in_channels = out_channels * block.expansion
         
         return nn.Sequential(*layers)
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
-        ## TODO
-        output = None
+        output = self.conv1(x)
+        output = self.bn1(output)
+        output = F.relu(output)
+
+        output = self.layer1(output)
+        output = self.layer2(output)
+        output = self.layer3(output)
+        output = self.layer4(output)
+
+        output = self.avg_pool(output)
+        output = torch.flatten(output, 1)
+        output = self.fc(output)
+
         return output

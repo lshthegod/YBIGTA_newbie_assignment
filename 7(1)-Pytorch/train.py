@@ -9,18 +9,25 @@ from config import *
 
 NUM_CLASSES = 10  
 
+transform = transforms.Compose([
+    transforms.ToTensor(),
+    transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5)),
+])
+
 # CIFAR-10 데이터셋 로드
-train_dataset = datasets.CIFAR10(root="./data", train=True, download=True)
+train_dataset = datasets.CIFAR10(root="./data", train=True, transform=transform, download=True)
 train_loader = DataLoader(train_dataset, batch_size=BATCH_SIZE, shuffle=True)
 
-test_dataset = datasets.CIFAR10(root="./data", train=False, download=True)
+test_dataset = datasets.CIFAR10(root="./data", train=False, transform=transform, download=True)
 test_loader = DataLoader(test_dataset, batch_size=BATCH_SIZE, shuffle=False)
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 # resnet 18 선언하기
 ## TODO
-model = None
+num_blocks = [2, 2, 2, 2]
+model = ResNet(BasicBlock, num_blocks, num_classes=NUM_CLASSES)
+model = model.to(device)
 
 criterion: nn.CrossEntropyLoss = nn.CrossEntropyLoss()
 optimizer: optim.Adam = optim.Adam(model.parameters(), lr=LEARNING_RATE)
